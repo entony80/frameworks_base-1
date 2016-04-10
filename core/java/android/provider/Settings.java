@@ -4623,14 +4623,7 @@ public final class Settings {
          * Display second in the Clock
          * @hide
          */
-        public static final String CLOCK_USE_SECOND = "clock_use_second";
-
-        /**
-         * Position of date
-         * 0 - Left of clock
-         * 1 - Right of clock
-         * @hide
-         */
+		 
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 
         /**
@@ -4901,8 +4894,7 @@ public final class Settings {
          * Nfc sound mode.
          */
         public static final String NFC_SOUND_MODE = "nfc_sound_mode";
-
-        /**
+		/**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
