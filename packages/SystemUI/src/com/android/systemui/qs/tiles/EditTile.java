@@ -54,7 +54,7 @@ public class EditTile extends QSTile<QSTile.BooleanState> implements KeyguardMon
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        return null;
+        // return null;
     }
 
     @Override
