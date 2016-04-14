@@ -411,11 +411,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mExpandedContents;
     TextView mNotificationPanelDebugText;
 
-    // Aicp logo
-    private boolean mAicpLogo;
-    private int mAicpLogoColor;
-    private ImageView aicpLogo;
-    private int mAicpLogoStyle;
+    // Cypher logo
+    private boolean mCypherLogo;
+    private int mCypherLogoColor;
+    private ImageView cypherLogo;
+    private int mCypherLogoStyle;
 
     // settings
     private QSDragPanel mQSPanel;
@@ -631,13 +631,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.BATTERY_SAVER_MODE_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_AICP_LOGO),
+                    Settings.System.STATUS_BAR_CYPHER_LOGO),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_AICP_LOGO_COLOR),
+                    Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_AICP_LOGO_STYLE),
+                    Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USE_SLIM_RECENTS), false, this,
@@ -699,7 +699,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                                 .getColor(com.android.internal.R.color.battery_saver_mode_color);
                     }
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_AICP_LOGO_STYLE))) {
+                    Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE))) {
                 recreateStatusBar();
                 updateRowStates();
                 updateSpeedbump();
@@ -734,19 +734,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             // This method reads CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY
             updateCustomRecentsLongPressHandler(false);
 
-            mAicpLogoStyle = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_AICP_LOGO_STYLE, 0,
+            mCypherLogoStyle = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE, 0,
                     UserHandle.USER_CURRENT);
-            mAicpLogo = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_AICP_LOGO, 0, mCurrentUserId) == 1;
-            mAicpLogoColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_AICP_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
-            if (mAicpLogoStyle == 0) {
-                aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.left_aicp_logo);
+            mCypherLogo = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_CYPHER_LOGO, 0, mCurrentUserId) == 1;
+            mCypherLogoColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            if (mCypherLogoStyle == 0) {
+                cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
             } else {
-                aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.aicp_logo);
+                cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
             }
-            showAicpLogo(mAicpLogo, mAicpLogoColor, mAicpLogoStyle);
+            showCypherLogo(mCypherLogo, mCypherLogoColor, mCypherLogoStyle);
 
 
             mWeatherTempStyle = Settings.System.getIntForUser(
@@ -1600,19 +1600,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateWeatherTextState(mWeatherController.getWeatherInfo().temp, mWeatherTempColor,
                 mWeatherTempSize, mWeatherTempFontStyle);
 
-        mAicpLogoStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_AICP_LOGO_STYLE, 0,
+        mCypherLogoStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE, 0,
                 UserHandle.USER_CURRENT);
-        if (mAicpLogoStyle == 0) {
-            aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.left_aicp_logo);
+        if (mCypherLogoStyle == 0) {
+            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
         } else {
-            aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.aicp_logo);
+            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
         }
-        mAicpLogo = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_AICP_LOGO, 0, mCurrentUserId) == 1;
-        mAicpLogoColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_AICP_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
-        showAicpLogo(mAicpLogo, mAicpLogoColor, mAicpLogoStyle);
+        mCypherLogo = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CYPHER_LOGO, 0, mCurrentUserId) == 1;
+        mCypherLogoColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+        showCypherLogo(mCypherLogo, mCypherLogoColor, mCypherLogoStyle);
 
         mKeyguardUserSwitcher = new KeyguardUserSwitcher(mContext,
                 (ViewStub) mStatusBarWindowContent.findViewById(R.id.keyguard_user_switcher),
@@ -4091,21 +4091,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    public void showAicpLogo(boolean show, int color, int style) {
+    public void showCypherLogo(boolean show, int color, int style) {
         if (mStatusBarView == null) return;
         if (!show) {
-            aicpLogo.setVisibility(View.GONE);
+            cypherLogo.setVisibility(View.GONE);
             return;
         }
-        aicpLogo.setColorFilter(color, Mode.SRC_IN);
+        cypherLogo.setColorFilter(color, Mode.SRC_IN);
         if (style == 0) {
-            aicpLogo.setVisibility(View.GONE);
-            aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.left_aicp_logo);
+            cypherLogo.setVisibility(View.GONE);
+            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
         } else {
-            aicpLogo.setVisibility(View.GONE);
-            aicpLogo = (ImageView) mStatusBarView.findViewById(R.id.aicp_logo);
+            cypherLogo.setVisibility(View.GONE);
+            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
         }
-        aicpLogo.setVisibility(View.VISIBLE);
+        cypherLogo.setVisibility(View.VISIBLE);
     }
 
     private BroadcastReceiver mPackageBroadcastReceiver = new BroadcastReceiver() {

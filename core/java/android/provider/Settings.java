@@ -4558,16 +4558,16 @@ public final class Settings {
         public static final String DASHBOARD_SWITCHES = "dashboard_switches";
 
         /**
-         * Statusbar AICP logo
+         * Statusbar Cypher logo
          * @hide
          */
-        public static final String STATUS_BAR_AICP_LOGO = "status_bar_aicp_logo";
+        public static final String STATUS_BAR_CYPHER_LOGO = "status_bar_cypher_logo";
 
         /**
-         * Statusbar AICP logo color setting
+         * Statusbar Cypher logo color setting
          * @hide
          */
-        public static final String STATUS_BAR_AICP_LOGO_COLOR = "status_bar_aicp_logo_color";
+        public static final String STATUS_BAR_CYPHER_LOGO_COLOR = "status_bar_cypher_logo_color";
 
         /**
          * Style of Status bar logo
@@ -4575,7 +4575,7 @@ public final class Settings {
          * 1 - Right
          * @hide
          */
-        public static final String STATUS_BAR_AICP_LOGO_STYLE = "status_bar_aicp_logo_style";
+        public static final String STATUS_BAR_CYPHER_LOGO_STYLE = "status_bar_cypher_logo_style";
 
          /**
          * Shows custom date before clock time
