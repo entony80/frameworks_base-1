@@ -173,6 +173,7 @@
   <string name="quick_settings_dynamic_tile_detail_title">Botões dinâmicos</string>
   <string name="dynamic_qs_tile_next_alarm_label">Próximo alarme</string>
   <string name="dynamic_qs_tile_ime_selector_label">Seletor de IME</string>
+<<<<<<< HEAD
   <string name="dynamic_qs_tile_su_label">Acesso super-usuário</string>
   <!-- LiveDisplay strings -->
   <string name="accessibility_quick_settings_live_display_off">LiveDisplay desligado.</string>
@@ -185,6 +186,9 @@
   <string name="accessibility_quick_settings_live_display_changed_day">LiveDisplay alterado para modo dia.</string>
   <string name="accessibility_quick_settings_live_display_changed_night">LiveDisplay alterado para modo noite.</string>
   <string name="accessibility_quick_settings_live_display_changed_outdoor">LiveDisplay alterado para modo ao ar livre.</string>
+=======
+  <string name="dynamic_qs_tile_su_label">Acesso super usuário</string>
+>>>>>>> 68c5761... systemui: Remove LiveDisplay tile
   <string name="quick_settings_title_advanced_location">Localização em 3 estados</string>
   <!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
   <string name="accessibility_quick_settings_location_battery_saving">Localização: economia de bateria.</string>
