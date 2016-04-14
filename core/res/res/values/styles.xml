@@ -124,8 +124,8 @@ please see styles_device_defaults.xml.
          with this animation style if you would like to have the standard
          platform transition animation. -->
     <style name="Animation.Translucent">
-        <item name="windowEnterAnimation">@anim/translucent_enter</item>
-        <item name="windowExitAnimation">@anim/translucent_exit</item>
+        <item name="windowEnterAnimation">@anim/activity_open_enter</item>
+        <item name="windowExitAnimation">@anim/activity_close_exit</item>
     </style>
 
     <!-- Standard animations for a non-full-screen window or activity. -->
