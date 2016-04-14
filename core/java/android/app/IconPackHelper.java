@@ -656,20 +656,20 @@ public class IconPackHelper {
                      if (DEBUG) {
                          Log.d(TAG, "Composing icon for " + pkgName);
                      }
-                     Bitmap bmp = createIconBitmap(baseIcon, res, back, defaultSwatchColor,
-                             iconInfo);
-                     if (!cacheComposedIcon(bmp,
-                             getCachedIconName(pkgName, resId, outValue.density))) {
+
+                     Bitmap bmp = createIconBitmap(baseIcon, res, back, defaultSwatchColor, iconInfo);
+
+                     if (!cacheComposedIcon(bmp, getCachedIconName(pkgName, resId, outValue.density))) {
                          Log.w(TAG, "Unable to cache icon " + outValue.string);
                          // restore the original TypedValue
                          outValue.setTo(tempValue);
-                    }
-				} catch (Exception e) {
-                    // catch all, restore the original value and log it
-                    outValue.setTo(tempValue);
-                    Log.w(TAG, "getValue failed for " + outValue.string, e);
-                }
-            }
+                     }
+                 }
+             } catch (Exception e) {
+                 // catch all, restore the original value and log it
+                 outValue.setTo(tempValue);
+                 Log.w(TAG, "getValue failed for " + outValue.string, e);
+             }
         }
 
         private static Bitmap createIconBitmap(Drawable icon, Resources res, int iconBack,
