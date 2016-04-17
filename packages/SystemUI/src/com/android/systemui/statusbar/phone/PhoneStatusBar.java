@@ -411,12 +411,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mExpandedContents;
     TextView mNotificationPanelDebugText;
 
-    // Cypher logo
-    private boolean mCypherLogo;
-    private int mCypherLogoColor;
-    private ImageView cypherLogo;
-    private int mCypherLogoStyle;
-
     // settings
     private QSDragPanel mQSPanel;
     private QSTileHost mQSTileHost;
@@ -631,15 +625,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.BATTERY_SAVER_MODE_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CYPHER_LOGO),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USE_SLIM_RECENTS), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -699,13 +684,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                                 .getColor(com.android.internal.R.color.battery_saver_mode_color);
                     }
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE))) {
-                recreateStatusBar();
-                updateRowStates();
-                updateSpeedbump();
-                updateClearAll();
-                updateEmptyShadeView();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.USE_SLIM_RECENTS))) {
                 updateRecents();
             }
@@ -733,20 +711,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             // This method reads CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY
             updateCustomRecentsLongPressHandler(false);
-
-            mCypherLogoStyle = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE, 0,
-                    UserHandle.USER_CURRENT);
-            mCypherLogo = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_CYPHER_LOGO, 0, mCurrentUserId) == 1;
-            mCypherLogoColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
-            if (mCypherLogoStyle == 0) {
-                cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
-            } else {
-                cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
-            }
-            showCypherLogo(mCypherLogo, mCypherLogoColor, mCypherLogoStyle);
 
 
             mWeatherTempStyle = Settings.System.getIntForUser(
@@ -1599,20 +1563,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateWeatherTextState(mWeatherController.getWeatherInfo().temp, mWeatherTempColor,
                 mWeatherTempSize, mWeatherTempFontStyle);
-
-        mCypherLogoStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CYPHER_LOGO_STYLE, 0,
-                UserHandle.USER_CURRENT);
-        if (mCypherLogoStyle == 0) {
-            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
-        } else {
-            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
-        }
-        mCypherLogo = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CYPHER_LOGO, 0, mCurrentUserId) == 1;
-        mCypherLogoColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CYPHER_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
-        showCypherLogo(mCypherLogo, mCypherLogoColor, mCypherLogoStyle);
 
         mKeyguardUserSwitcher = new KeyguardUserSwitcher(mContext,
                 (ViewStub) mStatusBarWindowContent.findViewById(R.id.keyguard_user_switcher),
@@ -4090,23 +4040,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         }
     };
-
-    public void showCypherLogo(boolean show, int color, int style) {
-        if (mStatusBarView == null) return;
-        if (!show) {
-            cypherLogo.setVisibility(View.GONE);
-            return;
-        }
-        cypherLogo.setColorFilter(color, Mode.SRC_IN);
-        if (style == 0) {
-            cypherLogo.setVisibility(View.GONE);
-            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cypher_logo);
-        } else {
-            cypherLogo.setVisibility(View.GONE);
-            cypherLogo = (ImageView) mStatusBarView.findViewById(R.id.cypher_logo);
-        }
-        cypherLogo.setVisibility(View.VISIBLE);
-    }
 
     private BroadcastReceiver mPackageBroadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
