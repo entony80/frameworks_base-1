@@ -44,6 +44,7 @@
     <color name="bright_foreground_light_disabled">#80000000</color>
     <color name="bright_foreground_dark_inverse">@android:color/bright_foreground_light</color>
     <color name="bright_foreground_light_inverse">@android:color/bright_foreground_dark</color>
+	<color name="busy_dialog_text">@color/white</color>
     <color name="dim_foreground_dark">#bebebe</color>
     <color name="dim_foreground_dark_disabled">#80bebebe</color>
     <color name="dim_foreground_dark_inverse">#323232</color>
