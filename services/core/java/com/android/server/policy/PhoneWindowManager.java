@@ -7435,21 +7435,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         theme = 0;
                     }
 
-                    // Define Array List For CypherDexOpt Drawable
-                    int CypherDexOptIndex = 0 +  (int)(Math.random()*(4));
-                    ArrayList<Integer> CypherDexOpt = new ArrayList<Integer>();
-                    CypherDexOpt.add(com.android.internal.R.drawable.cypherdexopt1);
-                    CypherDexOpt.add(com.android.internal.R.drawable.cypherdexopt1);
-                    CypherDexOpt.add(com.android.internal.R.drawable.cypherdexopt1);
-                    CypherDexOpt.add(com.android.internal.R.drawable.cypherdexopt1);
-
                     mBootMsgDialog = new ChaosBusyDialog(mContext, android.R.style.Theme_Translucent_NoTitleBar);
                     if (mContext.getPackageManager().isUpgrade()) {
                         mBootMsgDialog.setTitle(R.string.android_upgrading_title);
                     } else {
                         mBootMsgDialog.setTitle(R.string.android_start_title);
                     }
-                    mBootMsgDialog.setIcon(CypherDexOpt.get(CypherDexOptIndex));
                     mBootMsgDialog.getWindow().setType(
                             WindowManager.LayoutParams.TYPE_BOOT_PROGRESS);
                     mBootMsgDialog.getWindow().addFlags(
