@@ -266,7 +266,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     protected int onMoveWithBoundsCheck(int position) {
         // Make sure position isn't past the end of the cursor
         if (isAfterLast(position)) {
-            return MOVE_AFTER_LAST
+           return MOVE_AFTER_LAST;
         }
 
         // Make sure position isn't before the beginning of the cursor
