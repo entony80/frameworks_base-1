@@ -54,7 +54,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
-import android.view.IWindowManager;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityEvent;
@@ -315,7 +314,7 @@ public class NotificationPanelView extends PanelView implements
             mShowingExternalKeyguard = true;
             mCanDismissKeyguard = false;
             mStatusBar.focusKeyguardExternalView();
-            mLiveLockscreenController.onLiveLockScreenFocusChanged();
+            mLiveLockscreenController.onLiveLockScreenFocusChanged(true /* hasFocus */);
             resetAlphaTranslation();
             // Enables the left edge gesture to allow user
             // to return to keyguard
@@ -397,7 +396,7 @@ public class NotificationPanelView extends PanelView implements
             @Override
             public boolean onDown(MotionEvent e) {
                 mDown = e.getRawY();
-                mKeyguardBottomArea.expand();
+                mKeyguardBottomArea.expand(true);
                 return true;
             }
         });
@@ -2362,7 +2361,7 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     protected void startUnlockHintAnimation() {
-        mKeyguardBottomArea.expand();
+        mKeyguardBottomArea.expand(true);
         super.startUnlockHintAnimation();
         startHighlightIconAnimation(getCenterIcon());
     }
@@ -2397,13 +2396,13 @@ public class NotificationPanelView extends PanelView implements
         requestDisallowInterceptTouchEvent(true);
         mOnlyAffordanceInThisMotion = true;
         mQsTracking = false;
-        mKeyguardBottomArea.expand();
+        mKeyguardBottomArea.expand(true);
     }
 
     @Override
     public void onSwipingAborted() {
         mKeyguardBottomArea.unbindCameraPrewarmService(false /* launched */);
-        mKeyguardBottomArea.expand();
+        mKeyguardBottomArea.expand(false);
     }
 
     @Override
