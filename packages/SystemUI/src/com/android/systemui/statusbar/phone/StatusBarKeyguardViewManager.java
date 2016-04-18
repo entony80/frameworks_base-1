@@ -104,7 +104,7 @@ public class StatusBarKeyguardViewManager {
         if (mBouncer != null) mBouncer.removeView();
         mFingerprintUnlockController = fingerprintUnlockController;
         mBouncer = new KeyguardBouncer(mContext, mViewMediatorCallback, mLockPatternUtils,
-                mStatusBarWindowManager, container);
+                mStatusBarWindowManager, container, mPhoneStatusBar);
     }
 
     /**
@@ -398,17 +398,9 @@ public class StatusBarKeyguardViewManager {
      * Dismisses the keyguard by going to the next screen or making it gone.
      */
     public void dismiss() {
-        dismiss(false);
-    }
-
-    public void dismiss(boolean focusKeyguardExternalView) {
-        if ((mDeviceInteractive || mDeviceWillWakeUp) && !focusKeyguardExternalView) {
-            showBouncer();
-            hideUnlockFab();
-        } else if (focusKeyguardExternalView) {
-            showUnlockFab();
-            mStatusBarWindowManager.setKeyguardExternalViewFocus(true);
-        }
+        if ((mDeviceInteractive || mDeviceWillWakeUp)) {
+              showBouncer();
+		}
     }
 
     /**
