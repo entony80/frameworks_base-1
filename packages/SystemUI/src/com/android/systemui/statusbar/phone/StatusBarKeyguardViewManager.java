@@ -559,7 +559,7 @@ public class StatusBarKeyguardViewManager {
                 false /* delayed */, speedUpFactor);
         if (mStatusBarWindowManager.keyguardExternalViewHasFocus()) {
             mStatusBarWindowManager.setKeyguardExternalViewFocus(false);
-            dismiss(false);
+            dismiss();
         }
     }
 
@@ -631,7 +631,7 @@ public class StatusBarKeyguardViewManager {
         @Override
         public void onClick(View v) {
             mStatusBarWindowManager.setKeyguardExternalViewFocus(false);
-            dismiss(false);
+            dismiss();
         }
     };
 }
