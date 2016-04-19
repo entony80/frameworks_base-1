@@ -175,6 +175,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         return mCount;
     }
 
+<<<<<<< HEAD
     /** @hide */
     @Override
     protected boolean isAfterLast(int position) {
@@ -217,10 +218,14 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             startPos = Math.max(0, requiredPos - mCursorWindowCapacity/3);
         }
 
+=======
+    private void fillWindow(int requiredPos) {
+>>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
         clearOrCreateWindow(getDatabase().getPath());
         traverseQuery(startPos, requiredPos, mWindow, countAll);
     }
 
+<<<<<<< HEAD
     private void traverseQuery(int requiredPos) {
         traverseQuery(requiredPos, requiredPos, null, false); // need no data - start=required.
     }
@@ -232,6 +237,13 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             final int found = mQuery.traverse(w, startPos, requiredPos, countAll, exhausted);
             if (w != null && mCursorWindowCapacity == 0) {
                 mCursorWindowCapacity = w.getNumRows();
+=======
+        try {
+            if (mCount == NO_COUNT) {
+                int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos, 0);
+                mCount = mQuery.fillWindow(mWindow, startPos, requiredPos, true);
+                mCursorWindowCapacity = mWindow.getNumRows();
+>>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
                 if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "received count(*) from native_fill_window: " + mCount);
                 }
@@ -240,7 +252,13 @@ public class SQLiteCursor extends AbstractWindowedCursor {
                 // we exhausted the whole result set, so we know the count.
                 mCount = mFound = found;
             } else {
+<<<<<<< HEAD
                 mFound = Math.max(mFound, found);
+=======
+                int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos,
+                        mCursorWindowCapacity);
+                mQuery.fillWindow(mWindow, startPos, requiredPos, false);
+>>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
             }
         } catch (RuntimeException ex) {
             // Close the cursor window if the query failed and therefore will
