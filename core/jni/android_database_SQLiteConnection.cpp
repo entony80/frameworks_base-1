@@ -859,6 +859,4 @@ int register_android_database_SQLiteConnection(JNIEnv *env)
                                 NELEM(sMethods));
 }
 
-} // namespace android
-Status API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Contact 
+} // namespace android 
