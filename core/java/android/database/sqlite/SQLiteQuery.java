@@ -20,10 +20,13 @@ import android.database.CursorWindow;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.util.Log;
+<<<<<<< HEAD
 import android.util.MutableBoolean;
 import android.util.MutableInt;
 
 import java.lang.ref.WeakReference;
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 
 /**
  * Represents a query that reads the resulting rows into a {@link SQLiteQuery}.
@@ -36,9 +39,12 @@ public final class SQLiteQuery extends SQLiteProgram {
     private static final String TAG = "SQLiteQuery";
 
     private final CancellationSignal mCancellationSignal;
+<<<<<<< HEAD
     private final MutableInt mNumRowsFound = new MutableInt(0);
     private final WeakReference<SQLiteQuery> mWeak = new WeakReference(this);
     private WeakReference<SQLiteConnection.PreparedStatement> mLastStmt = null;
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 
     SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
         super(db, query, null, cancellationSignal);
@@ -68,12 +74,16 @@ public final class SQLiteQuery extends SQLiteProgram {
         try {
             if (window != null) window.acquireReference();
             try {
-                WeakReference<SQLiteConnection.PreparedStatement> stmt;
-                stmt = getSession().executeForCursorWindow(getSql(), getBindArgs(),
+                int numRows = getSession().executeForCursorWindow(getSql(), getBindArgs(),
                         window, startPos, requiredPos, countAllRows, getConnectionFlags(),
+<<<<<<< HEAD
                         mCancellationSignal, exhausted, mNumRowsFound, this.mWeak);
                 setLastStmt(stmt);
                 return mNumRowsFound.value;
+=======
+                        mCancellationSignal);
+                return numRows;
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
             } catch (SQLiteDatabaseCorruptException ex) {
                 onCorruption();
                 throw ex;
@@ -87,6 +97,7 @@ public final class SQLiteQuery extends SQLiteProgram {
             releaseReference();
         }
     }
+<<<<<<< HEAD
 
     private final void setLastStmt(WeakReference<SQLiteConnection.PreparedStatement> stmt) {
         if (mLastStmt == stmt) {
@@ -111,6 +122,8 @@ public final class SQLiteQuery extends SQLiteProgram {
         setLastStmt(null);
         super.close();
     }
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 
     @Override
     public String toString() {

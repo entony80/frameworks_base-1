@@ -22,12 +22,15 @@ import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 
+<<<<<<< HEAD
 import android.util.MutableBoolean;
 import android.util.MutableInt;
 
 import java.lang.ref.WeakReference;
 
 import static android.database.sqlite.SQLiteConnection.PreparedStatement;
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 /**
  * Provides a single client the ability to use a database.
  *
@@ -815,44 +818,65 @@ public final class SQLiteSession {
      * @param connectionFlags The connection flags to use if a connection must be
      * acquired by this operation.  Refer to {@link SQLiteConnectionPool}.
      * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
+<<<<<<< HEAD
      * @param exhausted will be set to true if the full result set was consumed - never set to false
      * @param seenRows Set to the number of rows that have been seen in this queryso far.  Might
      * not be all rows in the result set unless <code>countAllRows</code> is true.
      * @param client A client that will later be used in a queueClientDereferenceLocked() call
      * @return A reference that will later be used in a queueClientDereferenceLocked() call
+=======
+     * @return The number of rows that were counted during query execution.  Might
+     * not be all rows in the result set unless <code>countAllRows</code> is true.
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
      *
      * @throws SQLiteException if an error occurs, such as a syntax error
      * or invalid number of bind arguments.
      * @throws OperationCanceledException if the operation was canceled.
      */
-    public WeakReference<PreparedStatement> executeForCursorWindow(String sql, Object[] bindArgs,
+    public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
+<<<<<<< HEAD
             int connectionFlags, CancellationSignal cancellationSignal, MutableBoolean exhausted,
             MutableInt seenRows, WeakReference client) {
+=======
+            int connectionFlags, CancellationSignal cancellationSignal) {
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
 
         if (executeSpecial(sql, bindArgs, connectionFlags, cancellationSignal)) {
+<<<<<<< HEAD
             if (window != null) window.clear();
             seenRows.value = 0;
             return null;
+=======
+            window.clear();
+            return 0;
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         }
 
         acquireConnection(sql, connectionFlags, cancellationSignal); // might throw
         try {
             return mConnection.executeForCursorWindow(sql, bindArgs,
                     window, startPos, requiredPos, countAllRows,
+<<<<<<< HEAD
                     cancellationSignal, exhausted, seenRows, client); // might throw
+=======
+                    cancellationSignal); // might throw
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         } finally {
             releaseConnection(); // might throw
         }
     }
 
+<<<<<<< HEAD
     void releaseStmtRef(WeakReference<PreparedStatement> stmt, WeakReference client) {
         mConnectionPool.releaseStmtRef(stmt, client, mConnection);
     }
 
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
     /**
      * Performs special reinterpretation of certain SQL statements such as "BEGIN",
      * "COMMIT" and "ROLLBACK" to ensure that transaction state invariants are

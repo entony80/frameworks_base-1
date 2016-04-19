@@ -29,11 +29,13 @@ import android.os.ParcelFileDescriptor;
 import android.os.Trace;
 import android.util.Log;
 import android.util.LruCache;
+<<<<<<< HEAD
 import android.util.MutableBoolean;
 import android.util.MutableInt;
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 import android.util.Printer;
 
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -104,12 +106,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     private final boolean mIsReadOnlyConnection;
     private final PreparedStatementCache mPreparedStatementCache;
     private PreparedStatement mPreparedStatementPool;
-	
-	// Queue for resetting prepared statements that we've left open for performance reasons but may
-    // no longer need. Split into two parallel lists to avoid allocation of a Pair each time.
-    // Protected by mPool.mLock.
-    private final ArrayList<WeakReference<PreparedStatement>> mDerefQueueStmt = new ArrayList<>(2);
-    private final ArrayList<WeakReference> mDerefQueueClient = new ArrayList<>(2);
 
     // The recent operations log.
     private final OperationLog mRecentOperations = new OperationLog();
@@ -828,10 +824,14 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
      * or invalid number of bind arguments.
      * @throws OperationCanceledException if the operation was canceled.
      */
-    public WeakReference<PreparedStatement> executeForCursorWindow(String sql, Object[] bindArgs,
+    public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
+<<<<<<< HEAD
             CancellationSignal cancellationSignal, MutableBoolean exhausted, MutableInt seenRows,
             WeakReference client) {
+=======
+            CancellationSignal cancellationSignal) {
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
@@ -844,10 +844,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             int actualPos = -1;
             int countedRows = -1;
             int filledRows = -1;
-			seenRows.value = -1;
             final int cookie = mRecentOperations.beginOperation("executeForCursorWindow",
                     sql, bindArgs);
             try {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 final PreparedStatement statement;
                 if (window == null) {
@@ -858,6 +858,9 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                 }
 				statement.mLastClient = client;
 				
+=======
+                final PreparedStatement statement = acquirePreparedStatement(sql, bindArgs, startPos);
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
                 if (DEBUG) dumpStatement(statement, "before");
                 boolean shouldReset = countAllRows; // might as well, if we're consuming everything
 =======
@@ -887,6 +890,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                             // we've exhausted the result set, no use keeping the query state around
                             shouldReset = true;
                         }
+<<<<<<< HEAD
                         seenRows.value = alreadyStepped + countedRows;
                         return statement.mWeak;
 =======
@@ -899,6 +903,9 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                         window.setStartPosition(actualPos);
                         return countedRows;
 >>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
+=======
+                        return alreadyStepped + countedRows;
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
                     } finally {
                         detachCancellationSignal(cancellationSignal);
                     }
@@ -914,8 +921,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                             + "', startPos=" + startPos
                             + ", actualPos=" + actualPos
                             + ", filledRows=" + filledRows
-                            + ", countedRows=" + countedRows
-                            + ", seenRows=" + seenRows.value);
+                            + ", countedRows=" + countedRows);
                 }
             }
         } finally {
@@ -923,6 +929,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         }
     }
 
+<<<<<<< HEAD
 	/**
      * Called from the connection pool when this connection is released, or when a new deref is
      * queued and the connection was available. Must be locked on the pool's mLock.
@@ -949,6 +956,15 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     void queueClientDereferenceLocked(WeakReference<PreparedStatement> stmt, WeakReference client) {
         mDerefQueueStmt.add(stmt);
         mDerefQueueClient.add(client);
+=======
+	private void dumpStatement(PreparedStatement stmt, String info) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(info).append(": ").append(stmt);
+        sb.append("\n    mSQL=").append(stmt.mSql);
+        sb.append("\n    mLastBindArgs=").append(stmt.mLastBindArgs);
+        sb.append("\n    mNumSteps=").append(stmt.mNumSteps);
+        Log.i(TAG, sb.toString());
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
     }
 
     private PreparedStatement acquirePreparedStatement(String sql) {
@@ -1015,7 +1031,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             nativeResetStatementAndClearBindings(mConnectionPtr, statement.mStatementPtr);
             statement.mLastBindArgs = null;
             statement.mNumSteps = PreparedStatement.RESET;
-			statement.mLastClient = null;
         } catch (SQLiteException ex) {
             // The statement could not be reset due to an error.  Remove it from the cache.
             // When remove() is called, the cache will invoke its entryRemoved() callback,
@@ -1229,10 +1244,15 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         // We ignore the first row in the database list because it corresponds to
         // the main database which we have already described.
         CursorWindow window = new CursorWindow("collectDbStats");
+<<<<<<< HEAD
 		MutableBoolean exh = new MutableBoolean(false);
 		MutableInt seen = new MutableInt(0);
         try {
             executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null, exh, seen, null);
+=======
+        try {
+            executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null);
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
             for (int i = 1; i < window.getNumRows(); i++) {
                 String name = window.getString(i, 1);
                 String path = window.getString(i, 2);
@@ -1293,7 +1313,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             statement.mPoolNext = null;
             statement.mInCache = false;
         } else {
-            statement = new PreparedStatement(this);
+            statement = new PreparedStatement();
         }
         statement.mSql = sql;
         statement.mStatementPtr = statementPtr;
@@ -1307,9 +1327,12 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         statement.mSql = null;
 <<<<<<< HEAD
 		statement.mLastBindArgs = null;
+<<<<<<< HEAD
 		statement.mLastClient = null;
 =======
 >>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         statement.mPoolNext = mPreparedStatementPool;
         mPreparedStatementPool = statement;
     }
@@ -1332,7 +1355,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
      * resource disposal because all native statement objects must be freed before
      * the native database object can be closed.  So no finalizers here.
      */
-    static final class PreparedStatement {
+    private static final class PreparedStatement {
         // Next item in pool.
         public PreparedStatement mPoolNext;
 
@@ -1360,15 +1383,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         // possible for SQLite calls to be re-entrant.  Consequently we need to prevent
         // in use statements from being finalized until they are no longer in use.
         public boolean mInUse;
-		
-		public final WeakReference<PreparedStatement> mWeak = new WeakReference<>(this);
-        public WeakReference mLastClient;
-
-        public final SQLiteConnection owner;
-
-        public PreparedStatement(SQLiteConnection owner) {
-            this.owner = owner;
-        }
     }
 
     private final class PreparedStatementCache

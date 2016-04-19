@@ -307,7 +307,10 @@ public class SQLiteCursor extends AbstractWindowedCursor {
     @Override
     public void deactivate() {
         super.deactivate();
+<<<<<<< HEAD
         mQuery.deactivate();
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         mDriver.cursorDeactivated();
     }
 
@@ -337,7 +340,10 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             mPos = -1;
             mCount = NO_COUNT;
 
+<<<<<<< HEAD
             mQuery.onRequery();
+=======
+>>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
             mDriver.cursorRequeried(this);
         }
 
