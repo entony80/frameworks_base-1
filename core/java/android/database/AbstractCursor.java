@@ -216,15 +216,10 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     @Override
     public final boolean moveToPosition(int position) {
         // Make sure position isn't past the end of the cursor
-<<<<<<< HEAD
-        if (isAfterLast(position)) {
-           return MOVE_AFTER_LAST;
-=======
         final int count = getCount();
         if (position >= count) {
             mPos = count;
             return false;
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         }
 
         // Make sure position isn't before the beginning of the cursor

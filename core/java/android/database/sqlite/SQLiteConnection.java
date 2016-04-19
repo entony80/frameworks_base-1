@@ -29,14 +29,6 @@ import android.os.ParcelFileDescriptor;
 import android.os.Trace;
 import android.util.Log;
 import android.util.LruCache;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import android.util.MutableBoolean;
-=======
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
-import android.util.MutableInt;
-=======
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
 import android.util.Printer;
 
 import java.text.SimpleDateFormat;
@@ -828,16 +820,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
      */
     public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
-<<<<<<< HEAD
-<<<<<<< HEAD
-            CancellationSignal cancellationSignal, MutableBoolean exhausted, MutableInt seenRows,
-=======
-            CancellationSignal cancellationSignal, MutableInt seenRows,
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
-            WeakReference client) {
-=======
             CancellationSignal cancellationSignal) {
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
@@ -853,55 +836,13 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             final int cookie = mRecentOperations.beginOperation("executeForCursorWindow",
                     sql, bindArgs);
             try {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                final PreparedStatement statement;
-                if (window == null) {
-                    // we don't care if the statement has already been stepped a bit
-                    statement = acquirePreparedStatement(sql, bindArgs, Integer.MAX_VALUE);
-                } else {
-                    statement = acquirePreparedStatement(sql, bindArgs, startPos);
-                }
-				statement.mLastClient = client;
-				
-=======
-                final PreparedStatement statement = acquirePreparedStatement(sql, bindArgs, startPos);
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
-=======
-                final PreparedStatement statement = acquirePreparedStatement(sql, bindArgs, startPos);
-				statement.mLastClient = client;
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
-                if (DEBUG) dumpStatement(statement, "before");
-                boolean shouldReset = countAllRows; // might as well, if we're consuming everything
-=======
                 final PreparedStatement statement = acquirePreparedStatement(sql);
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
                 try {
                     throwIfStatementForbidden(statement);
                     bindArguments(statement, bindArgs);
                     applyBlockGuardPolicy(statement);
                     attachCancellationSignal(cancellationSignal);
                     try {
-<<<<<<< HEAD
-						final int skip = startPos - alreadyStepped;
-                        final int req = requiredPos - alreadyStepped;
-                        final long result = nativeExecuteForCursorWindow(
-                                mConnectionPtr, statement.mStatementPtr, window.mWindowPtr,
-                                skip, req, countAllRows);
-                        actualPos = alreadyStepped + (int)(result >> 32);
-                        countedRows = (int)result;
-                        filledRows = window.getNumRows();
-                        window.setStartPosition(actualPos);
-                        statement.mNumSteps = alreadyStepped + countedRows;
-                        if (filledRows == countedRows + (alreadyStepped > 0 ? 1 : 0)) {
-                            // everything fit in the window; we've exhausted the result set
-                            shouldReset = true;
-                        }
-<<<<<<< HEAD
-                        seenRows.value = alreadyStepped + countedRows;
-                        return statement.mWeak;
-=======
                         final long result = nativeExecuteForCursorWindow(
                                 mConnectionPtr, statement.mStatementPtr, window.mWindowPtr,
                                 startPos, requiredPos, countAllRows);
@@ -910,10 +851,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                         filledRows = window.getNumRows();
                         window.setStartPosition(actualPos);
                         return countedRows;
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
-=======
-                        return alreadyStepped + countedRows;
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
                     } finally {
                         detachCancellationSignal(cancellationSignal);
                     }
@@ -935,44 +872,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         } finally {
             window.releaseReference();
         }
-    }
-
-<<<<<<< HEAD
-	/**
-     * Called from the connection pool when this connection is released, or when a new deref is
-     * queued and the connection was available. Must be locked on the pool's mLock.
-     */
-    void handleDereferenceQueueLocked() {
-        final int N = mDerefQueueStmt.size();
-        for (int i=0; i<N; ++i) {
-            PreparedStatement stmt = mDerefQueueStmt.get(i).get();
-            if (stmt != null) {
-                WeakReference lastClient = stmt.mLastClient;
-                if (lastClient != null && lastClient == mDerefQueueClient.get(i)) {
-                    resetAndClear(stmt);
-                }
-            }
-        }
-        mDerefQueueStmt.clear();
-        mDerefQueueClient.clear();
-    }
-
-    /**
-     * Called from the connection pool when a client releases their reference to a statement. Will
-     * be handled on the next call to handleDereferenceQueueLocked(). Must lock the pool's mLock.
-     */
-    void queueClientDereferenceLocked(WeakReference<PreparedStatement> stmt, WeakReference client) {
-        mDerefQueueStmt.add(stmt);
-        mDerefQueueClient.add(client);
-=======
-	private void dumpStatement(PreparedStatement stmt, String info) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(info).append(": ").append(stmt);
-        sb.append("\n    mSQL=").append(stmt.mSql);
-        sb.append("\n    mLastBindArgs=").append(stmt.mLastBindArgs);
-        sb.append("\n    mNumSteps=").append(stmt.mNumSteps);
-        Log.i(TAG, sb.toString());
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
     }
 
     private PreparedStatement acquirePreparedStatement(String sql) {
@@ -1028,34 +927,8 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 
                 mPreparedStatementCache.remove(statement.mSql);
             }
-<<<<<<< HEAD
-        }
-        if (DEBUG) Log.i(TAG, "reset " + nreset + " busy statements");
-        return (nreset > 0);
-    }
-
-    private void resetAndClear(PreparedStatement statement) {
-        try {
-            nativeResetStatementAndClearBindings(mConnectionPtr, statement.mStatementPtr);
-            statement.mLastBindArgs = null;
-            statement.mNumSteps = PreparedStatement.RESET;
-        } catch (SQLiteException ex) {
-            // The statement could not be reset due to an error.  Remove it from the cache.
-            // When remove() is called, the cache will invoke its entryRemoved() callback,
-            // which will in turn call finalizePreparedStatement() to finalize and
-            // recycle the statement.
-            if (DEBUG) {
-                Log.d(TAG, "Could not reset prepared statement due to an exception.  "
-                        + "Removing it from the cache.  SQL: "
-                        + trimSqlForDisplay(statement.mSql), ex);
-            }
-
-            mPreparedStatementCache.remove(statement.mSql);
-            throw ex;
-=======
         } else {
             finalizePreparedStatement(statement);
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
         }
     }
 
@@ -1252,21 +1125,8 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         // We ignore the first row in the database list because it corresponds to
         // the main database which we have already described.
         CursorWindow window = new CursorWindow("collectDbStats");
-<<<<<<< HEAD
-<<<<<<< HEAD
-		MutableBoolean exh = new MutableBoolean(false);
-		MutableInt seen = new MutableInt(0);
-        try {
-            executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null, exh, seen, null);
-=======
         try {
             executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null);
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
-=======
-		MutableInt seen = new MutableInt(0);
-        try {
-            executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null, seen, null);
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             for (int i = 1; i < window.getNumRows(); i++) {
                 String name = window.getString(i, 1);
                 String path = window.getString(i, 2);
@@ -1339,14 +1199,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 
     private void recyclePreparedStatement(PreparedStatement statement) {
         statement.mSql = null;
-<<<<<<< HEAD
-		statement.mLastBindArgs = null;
-<<<<<<< HEAD
-		statement.mLastClient = null;
-=======
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
-=======
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
         statement.mPoolNext = mPreparedStatementPool;
         mPreparedStatementPool = statement;
     }
