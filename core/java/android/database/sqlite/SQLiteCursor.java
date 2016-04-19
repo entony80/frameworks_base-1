@@ -134,99 +134,21 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         return mCount;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    /** @hide */
-    @Override
-    protected boolean isAfterLast(int position) {
-        if (position < mFound) {
-            return false; // we've found enough rows to say this wasn't the end
-        } else if (mCount != NO_COUNT) {
-            return true; // position was not in what we've counted, and we've counted everything
-        }
-
-        // might as well get some data if we don't already have some
-        if (mWindow == null) {
-            fillWindow(position, false);
-        } else {
-            traverseQuery(0, position, null, false);
-        }
-        assert mCount == 0 || mFound > 0;
-        return position >= mFound;
-    }
-
-
-    private void fillWindow(int requiredPos, boolean countAll) {
-        requiredPos = Math.max(0, requiredPos);
-        final int firstOutside;
-=======
     private void fillWindow(int requiredPos) {
-		final int firstOutside;
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
-        if (mWindow == null) {
-            firstOutside = 0;
-        } else {
-            firstOutside = mWindow.getStartPosition() + mWindow.getNumRows();
-        }
-<<<<<<< HEAD
-
-=======
-    private void fillWindow(int requiredPos) {
->>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
-=======
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         clearOrCreateWindow(getDatabase().getPath());
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    private void traverseQuery(int requiredPos) {
-        traverseQuery(requiredPos, requiredPos, null, false); // need no data - start=required.
-    }
-
-    private void traverseQuery(int startPos, int requiredPos, CursorWindow w, boolean countAll) {
-        try {
-            MutableBoolean exhausted = mTmpBoolean;
-            exhausted.value = false;
-            final int found = mQuery.traverse(w, startPos, requiredPos, countAll, exhausted);
-            if (w != null && mCursorWindowCapacity == 0) {
-                mCursorWindowCapacity = w.getNumRows();
-=======
         try {
             if (mCount == NO_COUNT) {
                 int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos, 0);
                 mCount = mQuery.fillWindow(mWindow, startPos, requiredPos, true);
                 mCursorWindowCapacity = mWindow.getNumRows();
->>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
-=======
-		requiredPos = Math.max(0, requiredPos);
-        try {
-            if (mCount == NO_COUNT) {
-                mCount = mQuery.fillWindow(mWindow, requiredPos, requiredPos, true);
-                mCursorWindowCapacity = mWindow.getNumRows();
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
                 if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "received count(*) from native_fill_window: " + mCount);
                 }
             } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                mFound = Math.max(mFound, found);
-=======
                 int startPos = DatabaseUtils.cursorPickFillWindowStartPosition(requiredPos,
                         mCursorWindowCapacity);
                 mQuery.fillWindow(mWindow, startPos, requiredPos, false);
->>>>>>> parent of 0d9457f... [1/4] sqlite query perf: better window selection in common case
-=======
-                final int startPos;
-                if (requiredPos == firstOutside) {
-                    // looks like we're going forward one step at a time; let's avoid overlap
-                    startPos = requiredPos;
-                } else {
-                    // general case: get 1/3 space behind us, and 2/3 in front of us.
-                    startPos = Math.max(0, requiredPos - mCursorWindowCapacity/3);
-                }
-                mQuery.fillWindow(mWindow, startPos, requiredPos, false);
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             }
         } catch (RuntimeException ex) {
             // Close the cursor window if the query failed and therefore will
@@ -275,14 +197,6 @@ public class SQLiteCursor extends AbstractWindowedCursor {
     @Override
     public void deactivate() {
         super.deactivate();
-<<<<<<< HEAD
-<<<<<<< HEAD
-        mQuery.deactivate();
-=======
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
-=======
-		mQuery.deactivate();
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         mDriver.cursorDeactivated();
     }
 
@@ -312,14 +226,6 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             mPos = -1;
             mCount = NO_COUNT;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-            mQuery.onRequery();
-=======
->>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
-=======
-			mQuery.onRequery();
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             mDriver.cursorRequeried(this);
         }
 
