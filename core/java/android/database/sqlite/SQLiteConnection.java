@@ -30,7 +30,10 @@ import android.os.Trace;
 import android.util.Log;
 import android.util.LruCache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import android.util.MutableBoolean;
+=======
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
 import android.util.MutableInt;
 =======
 >>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
@@ -156,7 +159,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             long connectionPtr, long statementPtr);
     private static native long nativeExecuteForCursorWindow(
             long connectionPtr, long statementPtr, long windowPtr,
-            int startPos, int requiredPos, boolean countAllRows, MutableBoolean exhausted);
+            int startPos, int requiredPos, boolean countAllRows);
     private static native int nativeGetDbLookaside(long connectionPtr);
     private static native void nativeCancel(long connectionPtr);
     private static native void nativeResetCancel(long connectionPtr, boolean cancelable);
@@ -816,7 +819,6 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
      * @param countAllRows True to count all rows that the query would return
      * regagless of whether they fit in the window.
      * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
-	 * @param exhausted will be set to true if the full result set was consumed - never set to false
      * @return The number of rows that were counted during query execution.  Might
      * not be all rows in the result set unless <code>countAllRows</code> is true.
      *
@@ -827,7 +829,11 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
     public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
 <<<<<<< HEAD
+<<<<<<< HEAD
             CancellationSignal cancellationSignal, MutableBoolean exhausted, MutableInt seenRows,
+=======
+            CancellationSignal cancellationSignal, MutableInt seenRows,
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             WeakReference client) {
 =======
             CancellationSignal cancellationSignal) {
@@ -835,11 +841,11 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
-        if (exhausted == null) {
-            throw new IllegalArgumentException("exhausted must not be null.");
+        if (window == null) {
+            throw new IllegalArgumentException("window must not be null.");
         }
 
-        if (window != null) window.acquireReference();
+        window.acquireReference();
         try {
             int actualPos = -1;
             int countedRows = -1;
@@ -847,6 +853,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
             final int cookie = mRecentOperations.beginOperation("executeForCursorWindow",
                     sql, bindArgs);
             try {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 final PreparedStatement statement;
@@ -861,6 +868,10 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 =======
                 final PreparedStatement statement = acquirePreparedStatement(sql, bindArgs, startPos);
 >>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
+=======
+                final PreparedStatement statement = acquirePreparedStatement(sql, bindArgs, startPos);
+				statement.mLastClient = client;
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
                 if (DEBUG) dumpStatement(statement, "before");
                 boolean shouldReset = countAllRows; // might as well, if we're consuming everything
 =======
@@ -875,19 +886,16 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 <<<<<<< HEAD
 						final int skip = startPos - alreadyStepped;
                         final int req = requiredPos - alreadyStepped;
-						final long winPtr = window == null ? 0 : window.mWindowPtr;
                         final long result = nativeExecuteForCursorWindow(
-                                mConnectionPtr, statement.mStatementPtr, winPtr,
-                                skip, req, countAllRows, exhausted);
+                                mConnectionPtr, statement.mStatementPtr, window.mWindowPtr,
+                                skip, req, countAllRows);
                         actualPos = alreadyStepped + (int)(result >> 32);
                         countedRows = (int)result;
+                        filledRows = window.getNumRows();
+                        window.setStartPosition(actualPos);
                         statement.mNumSteps = alreadyStepped + countedRows;
-                        if (window != null) {
-                            filledRows = window.getNumRows();
-                            window.setStartPosition(actualPos);
-                        }
-                        if (exhausted.value) {
-                            // we've exhausted the result set, no use keeping the query state around
+                        if (filledRows == countedRows + (alreadyStepped > 0 ? 1 : 0)) {
+                            // everything fit in the window; we've exhausted the result set
                             shouldReset = true;
                         }
 <<<<<<< HEAD
@@ -925,7 +933,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
                 }
             }
         } finally {
-            if (window != null) window.releaseReference();
+            window.releaseReference();
         }
     }
 
@@ -1245,6 +1253,7 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         // the main database which we have already described.
         CursorWindow window = new CursorWindow("collectDbStats");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		MutableBoolean exh = new MutableBoolean(false);
 		MutableInt seen = new MutableInt(0);
         try {
@@ -1253,6 +1262,11 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
         try {
             executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null);
 >>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
+=======
+		MutableInt seen = new MutableInt(0);
+        try {
+            executeForCursorWindow("PRAGMA database_list;", null, window, 0, 0, false, null, seen, null);
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             for (int i = 1; i < window.getNumRows(); i++) {
                 String name = window.getString(i, 1);
                 String path = window.getString(i, 2);

@@ -21,7 +21,10 @@ import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 import android.util.Log;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import android.util.MutableBoolean;
+=======
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
 import android.util.MutableInt;
 
 import java.lang.ref.WeakReference;
@@ -40,7 +43,11 @@ public final class SQLiteQuery extends SQLiteProgram {
 
     private final CancellationSignal mCancellationSignal;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private final MutableInt mNumRowsFound = new MutableInt(0);
+=======
+	private final MutableInt mNumRowsFound = new MutableInt(0);
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
     private final WeakReference<SQLiteQuery> mWeak = new WeakReference(this);
     private WeakReference<SQLiteConnection.PreparedStatement> mLastStmt = null;
 =======
@@ -61,23 +68,25 @@ public final class SQLiteQuery extends SQLiteProgram {
      * If it won't fit, then the query should discard part of what it filled.
      * @param countAllRows True to count all rows that the query would
      * return regardless of whether they fit in the window.
-     * @param exhausted will be set to true if the full result set was consumed - never set to false
-     * @return Number of rows that have been consumed from this result set so far. Might not be all
-     * rows unless countAllRows is true.
+     * @return Number of rows that were enumerated.  Might not be all rows
+     * unless countAllRows is true.
      *
      * @throws SQLiteException if an error occurs.
      * @throws OperationCanceledException if the operation was canceled.
      */
-    int traverse(CursorWindow window, int startPos, int requiredPos,
-                 boolean countAllRows, MutableBoolean exhausted) {
+    int fillWindow(CursorWindow window, int startPos, int requiredPos, boolean countAllRows) {
         acquireReference();
         try {
-            if (window != null) window.acquireReference();
+            window.acquireReference();
             try {
                 int numRows = getSession().executeForCursorWindow(getSql(), getBindArgs(),
                         window, startPos, requiredPos, countAllRows, getConnectionFlags(),
 <<<<<<< HEAD
+<<<<<<< HEAD
                         mCancellationSignal, exhausted, mNumRowsFound, this.mWeak);
+=======
+                        mCancellationSignal, mNumRowsFound, this.mWeak);
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
                 setLastStmt(stmt);
                 return mNumRowsFound.value;
 =======
@@ -91,15 +100,20 @@ public final class SQLiteQuery extends SQLiteProgram {
                 Log.e(TAG, "exception: " + ex.getMessage() + "; query: " + getSql());
                 throw ex;
             } finally {
-                if (window != null) window.releaseReference();
+                window.releaseReference();
             }
         } finally {
             releaseReference();
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     private final void setLastStmt(WeakReference<SQLiteConnection.PreparedStatement> stmt) {
+=======
+	
+	private final void setLastStmt(WeakReference<SQLiteConnection.PreparedStatement> stmt) {
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         if (mLastStmt == stmt) {
             return;
         }

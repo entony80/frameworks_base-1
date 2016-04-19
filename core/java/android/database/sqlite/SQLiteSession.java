@@ -23,14 +23,21 @@ import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import android.util.MutableBoolean;
+=======
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
 import android.util.MutableInt;
 
 import java.lang.ref.WeakReference;
 
 import static android.database.sqlite.SQLiteConnection.PreparedStatement;
+<<<<<<< HEAD
 =======
 >>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
+=======
+
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
 /**
  * Provides a single client the ability to use a database.
  *
@@ -819,10 +826,13 @@ public final class SQLiteSession {
      * acquired by this operation.  Refer to {@link SQLiteConnectionPool}.
      * @param cancellationSignal A signal to cancel the operation in progress, or null if none.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param exhausted will be set to true if the full result set was consumed - never set to false
+=======
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
      * @param seenRows Set to the number of rows that have been seen in this queryso far.  Might
      * not be all rows in the result set unless <code>countAllRows</code> is true.
-     * @param client A client that will later be used in a queueClientDereferenceLocked() call
+	 * @param client A client that will later be used in a queueClientDereferenceLocked() call
      * @return A reference that will later be used in a queueClientDereferenceLocked() call
 =======
      * @return The number of rows that were counted during query execution.  Might
@@ -836,7 +846,11 @@ public final class SQLiteSession {
     public int executeForCursorWindow(String sql, Object[] bindArgs,
             CursorWindow window, int startPos, int requiredPos, boolean countAllRows,
 <<<<<<< HEAD
+<<<<<<< HEAD
             int connectionFlags, CancellationSignal cancellationSignal, MutableBoolean exhausted,
+=======
+            int connectionFlags, CancellationSignal cancellationSignal,
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             MutableInt seenRows, WeakReference client) {
 =======
             int connectionFlags, CancellationSignal cancellationSignal) {
@@ -844,10 +858,17 @@ public final class SQLiteSession {
         if (sql == null) {
             throw new IllegalArgumentException("sql must not be null.");
         }
+        if (window == null) {
+            throw new IllegalArgumentException("window must not be null.");
+        }
 
         if (executeSpecial(sql, bindArgs, connectionFlags, cancellationSignal)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (window != null) window.clear();
+=======
+            window.clear();
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
             seenRows.value = 0;
             return null;
 =======
@@ -861,17 +882,25 @@ public final class SQLiteSession {
             return mConnection.executeForCursorWindow(sql, bindArgs,
                     window, startPos, requiredPos, countAllRows,
 <<<<<<< HEAD
+<<<<<<< HEAD
                     cancellationSignal, exhausted, seenRows, client); // might throw
 =======
                     cancellationSignal); // might throw
 >>>>>>> parent of ac75a67... [3/4] sqlite query perf: clean up in-flight statements on cursor close
+=======
+                    cancellationSignal, seenRows, client); // might throw
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         } finally {
             releaseConnection(); // might throw
         }
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     void releaseStmtRef(WeakReference<PreparedStatement> stmt, WeakReference client) {
+=======
+	void releaseStmtRef(WeakReference<PreparedStatement> stmt, WeakReference client) {
+>>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
         mConnectionPool.releaseStmtRef(stmt, client, mConnection);
     }
 
