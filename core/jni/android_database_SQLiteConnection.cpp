@@ -68,22 +68,6 @@ static struct {
     jclass clazz;
 } gStringClassInfo;
 
-<<<<<<< HEAD
-static struct {
-    jclass clazz;
-    jmethodID resetBusy;
-} gConnClassInfo;
-
-<<<<<<< HEAD
-static struct {
-    jclass clazz;
-    jfieldID value;
-} gMutableBoolClassInfo;
-
-=======
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
-=======
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
 struct SQLiteConnection {
     // Open flags.
     // Must be kept in sync with the constants defined in SQLiteDatabase.java.
@@ -708,14 +692,6 @@ static jlong nativeExecuteForCursorWindow(JNIEnv* env, jclass clazz,
     int addedRows = 0;
     bool windowFull = false;
     bool gotException = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    bool first = true;
-=======
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
-=======
-	bool first = true;
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
     while (!gotException && (!windowFull || countAllRows)) {
         int err = sqlite3_step(statement);
         if (err == SQLITE_ROW) {
@@ -879,26 +855,10 @@ int register_android_database_SQLiteConnection(JNIEnv *env)
     clazz = FindClassOrDie(env, "java/lang/String");
     gStringClassInfo.clazz = MakeGlobalRefOrDie(env, clazz);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    clazz = FindClassOrDie(env, "android/database/sqlite/SQLiteConnection");
-    gConnClassInfo.clazz = MakeGlobalRefOrDie(env, clazz);
-    gConnClassInfo.resetBusy = GetMethodIDOrDie(env, clazz, "resetBusyStatements", "()Z");
-
-    clazz = FindClassOrDie(env, "android/util/MutableBoolean");
-    gMutableBoolClassInfo.clazz = MakeGlobalRefOrDie(env, clazz);
-    gMutableBoolClassInfo.value = GetFieldIDOrDie(env, clazz, "value", "Z");
-
-=======
->>>>>>> parent of f05e7ef... [2/4] sqlite query perf: try to reuse in-flight statements
-=======
-	 clazz = FindClassOrDie(env, "android/database/sqlite/SQLiteConnection");
-    gConnClassInfo.clazz = MakeGlobalRefOrDie(env, clazz);
-    gConnClassInfo.resetBusy = GetMethodIDOrDie(env, clazz, "resetBusyStatements", "()Z");
-
->>>>>>> parent of 43f1185... [4/4] sqlite query perf: try to avoid getCount()
     return RegisterMethodsOrDie(env, "android/database/sqlite/SQLiteConnection", sMethods,
                                 NELEM(sMethods));
 }
 
 } // namespace android
+Status API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Contact 
