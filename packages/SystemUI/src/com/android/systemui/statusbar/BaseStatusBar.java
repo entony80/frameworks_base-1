@@ -2677,11 +2677,9 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
     protected void addGestureAnywhereView() {
-        if (mGestureAnywhereView == null) {
-            mGestureAnywhereView = (GestureAnywhereView)View.inflate(
-                    mContext, R.layout.gesture_anywhere_overlay, null);
-            mWindowManager.addView(mGestureAnywhereView, getGestureAnywhereViewLayoutParams(Gravity.LEFT));
-        }
+        mGestureAnywhereView = (GestureAnywhereView)View.inflate(
+                mContext, R.layout.gesture_anywhere_overlay, null);
+        mWindowManager.addView(mGestureAnywhereView, getGestureAnywhereViewLayoutParams(Gravity.LEFT));
         mGestureAnywhereView.setStatusBar(this);
     }
 
