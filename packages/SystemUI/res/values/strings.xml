@@ -1037,9 +1037,6 @@
     <string name="volume_stream_limited_dnd" translatable="false">%s — Priority only</string>
     <string name="volume_stream_vibrate_dnd" translatable="false">%s vibrate — Priority only</string>
 
-    <!-- Name of special SystemUI debug settings -->
-    <string name="system_ui_tuner">System UI Tuner</string>
-
     <!-- Preference to show/hide embedded battery percentage [CHAR LIMIT=50] -->
     <string name="show_battery_percentage">Show embedded battery percentage</string>
 
