@@ -36,7 +36,6 @@ import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -60,7 +59,7 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_CLASS)
 public class GestureAnywhereView extends TriggerOverlayView implements GestureOverlayView.OnGestureListener {
     private static final String TAG = "GestureAnywhere";
-    private final File mStoreFile = new File(Environment.getExternalStorageDirectory(), "/data/ga_gestures");
+    private final File mStoreFile = new File("/data/system", "ga_gestures");
     State mState = State.Collapsed;
     private View mContent;
     private GestureOverlayView mGestureView;
@@ -125,7 +124,7 @@ public class GestureAnywhereView extends TriggerOverlayView implements GestureOv
             }
 
             int width = Settings.System.getInt(
-                    resolver, Settings.System.GESTURE_ANYWHERE_TRIGGER_WIDTH, 40);
+                    resolver, Settings.System.GESTURE_ANYWHERE_TRIGGER_WIDTH, 10);
             if (mTriggerWidth != width)
                 setTriggerWidth(width);
             setTopPercentage(Settings.System.getInt(
