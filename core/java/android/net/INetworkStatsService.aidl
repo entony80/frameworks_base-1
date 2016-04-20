@@ -57,5 +57,5 @@ interface INetworkStatsService {
     /** Advise persistance threshold; may be overridden internally. */
     void advisePersistThreshold(long thresholdBytes);
 
-	void resetDataUsageHistoryForAllUid(in NetworkTemplate template)
+    void resetDataUsageHistoryForAllUid(in NetworkTemplate template);
 }
