@@ -39,7 +39,7 @@ public class ChaosBusyDialog extends Dialog {
     private TextView mMessage;
 
     public ChaosBusyDialog(Context context) {
-        this(context, android.R.style.Theme_Holo_Dialog);
+        this(context, android.R.style.Theme_Material_Dialog);
     }
 
     public ChaosBusyDialog(Context context, int i) {
