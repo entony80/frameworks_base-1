@@ -4781,18 +4781,6 @@ public final class Settings {
          */
         public static final String BRIGHTNESS_ICON = "brightness_icon";
 
-	   /**
-	    * Enable blocking wakelock
-	    * @hide
-	    */
-	   public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
-
-	   /**
-	    * List of wakelock blocks selected
-	    * @hide
-	    */
-	   public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
-
         /**
          * Whether the proximity sensor will adjust call to speaker
          * @hide
