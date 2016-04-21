@@ -92,8 +92,6 @@ import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.SecurityController;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.policy.ZenModeController;
-import com.android.systemui.tuner.TunerService;
-import com.android.systemui.tuner.TunerService.Tunable;
 import android.telephony.TelephonyManager;
 import cyanogenmod.providers.CMSettings;
 
@@ -110,7 +108,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Platform implementation of the quick settings tile host **/
-public class QSTileHost implements QSTile.Host, Tunable {
+public class QSTileHost implements QSTile.Host {
     private static final String TAG = "QSTileHost";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
@@ -166,12 +164,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
                 Process.THREAD_PRIORITY_BACKGROUND);
         ht.start();
         mLooper = ht.getLooper();
-
-        TunerService.get(mContext).addTunableByProvider(this, CMSettings.Secure.QS_TILES, true);
-    }
-
-    public void destroy() {
-        TunerService.get(mContext).removeTunable(this);
     }
 
     public boolean isEditing() {
