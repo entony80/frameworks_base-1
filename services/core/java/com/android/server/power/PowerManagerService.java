@@ -713,12 +713,6 @@ public final class PowerManagerService extends SystemService
             resolver.registerContentObserver(CMSettings.Global.getUriFor(
                     CMSettings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-		            Settings.System.WAKELOCK_BLOCKING_ENABLED),
-		            false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.WAKELOCK_BLOCKING_LIST),
-                    false, mSettingsObserver, UserHandle.USER_ALL);
             resolver.registerContentObserver(CMSettings.Secure.getUriFor(
                     CMSettings.Secure.DEV_FORCE_SHOW_NAVBAR),
                     false, mSettingsObserver, UserHandle.USER_ALL);
@@ -813,14 +807,6 @@ public final class PowerManagerService extends SystemService
                 (mWakeUpWhenPluggedOrUnpluggedConfig ? 1 : 0));
         mProximityWakeEnabled = CMSettings.System.getInt(resolver,
                 CMSettings.System.PROXIMITY_ON_WAKE, mProximityWakeEnabledByDefaultConfig ? 1 : 0) == 1;
-
-        mWakeLockBlockingEnabled = Settings.System.getIntForUser(resolver,
-                Settings.System.WAKELOCK_BLOCKING_ENABLED, 0, UserHandle.USER_CURRENT);
-        String blockedWakelockList = Settings.System.getStringForUser(resolver,
-                Settings.System.WAKELOCK_BLOCKING_LIST, UserHandle.USER_CURRENT);
-        setBlockedWakeLocks(blockedWakelockList);
-        Slog.d(TAG, "mWakeLockBlockingEnabled=" + mWakeLockBlockingEnabled + " blockedWakelockList=" + blockedWakelockList);
-
 
         if (mSupportsDoubleTapWakeConfig) {
             boolean doubleTapWakeEnabled = Settings.Secure.getIntForUser(resolver,
