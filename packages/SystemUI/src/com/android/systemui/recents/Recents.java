@@ -589,8 +589,7 @@ public class Recents extends SystemUI
         if (mConfig.searchBarEnabled &&
                 mSystemServicesProxy.getOrBindSearchAppWidget(mContext, mAppWidgetHost) != null) {
             mConfig.getSearchBarBounds(mWindowRect.width(), mWindowRect.height(),
-                    mStatusBarHeight, searchBarBounds);;
-            }
+                    mStatusBarHeight, searchBarBounds);
         }
         mConfig.getAvailableTaskStackBounds(mWindowRect.width(), mWindowRect.height(),
                 mStatusBarHeight, (mConfig.hasTransposedNavBar ? mNavBarWidth : 0), searchBarBounds,

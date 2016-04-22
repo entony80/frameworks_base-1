@@ -312,7 +312,7 @@ public class RecentsConfiguration {
         updateShowSearch(context);
     }
 
-    private void updateShowSearch(Context context) {
+    public boolean updateShowSearch(Context context) {
         boolean wasEnabled = searchBarEnabled;
         searchBarEnabled = CMSettings.System.getInt(context.getContentResolver(),
                 CMSettings.System.RECENTS_SHOW_SEARCH_BAR, 1) == 1;
