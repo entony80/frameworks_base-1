@@ -708,8 +708,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         mFastOutLinearIn = AnimationUtils.loadInterpolator(mContext,
                 android.R.interpolator.fast_out_linear_in);
 
-        updateRecents();
-
         // Connect in to the status bar manager service
         StatusBarIconList iconList = new StatusBarIconList();
         mCommandQueue = new CommandQueue(this, iconList);
