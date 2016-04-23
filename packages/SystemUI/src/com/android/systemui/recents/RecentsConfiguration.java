@@ -76,8 +76,8 @@ public class RecentsConfiguration {
     public int maxNumTasksToLoad;
 
     /** Search bar */
-	public boolean searchBarEnabled = true;
     public int searchBarSpaceHeightPx;
+    public boolean showSearchBar;
 
     /** Task stack */
     public int taskStackScrollDuration;
@@ -312,11 +312,11 @@ public class RecentsConfiguration {
         updateShowSearch(context);
     }
 
-    public boolean updateShowSearch(Context context) {
-        boolean wasEnabled = searchBarEnabled;
-        searchBarEnabled = CMSettings.System.getInt(context.getContentResolver(),
-                CMSettings.System.RECENTS_SHOW_SEARCH_BAR, 1) == 1;
-        return wasEnabled != searchBarEnabled;
+    private void updateShowSearch(Context context) {
+        showSearchBar = CMSettings.System.getIntForUser(context.getContentResolver(),
+                CMSettings.System.RECENTS_SHOW_SEARCH_BAR, 1, UserHandle.USER_CURRENT) == 1;
+        searchBarSpaceHeightPx = showSearchBar ? context.getResources().getDimensionPixelSize(
+                R.dimen.recents_search_bar_space_height): 0;
     }
 
     /** Called when the configuration has changed, and we want to reset any configuration specific
