@@ -1478,7 +1478,7 @@ public class PopupWindow {
                 p.x -= right - displayFrameWidth;
             }
 
-            if (p.x < displayFrame.left && !mAllowLeftOverdraw) {
+            if (p.x < displayFrame.left) {
                 p.x = displayFrame.left;
                 p.width = Math.min(p.width, displayFrameWidth);
             }
