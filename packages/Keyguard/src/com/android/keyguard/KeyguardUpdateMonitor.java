@@ -1106,11 +1106,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         };
 
         mContext.getContentResolver().registerContentObserver(
-<<<<<<< HEAD
                 Settings.Global.getUriFor(Settings.Global.DEVICE_PROVISIONED),
-=======
-                CMSettings.System.getUriFor(CMSettings.Secure.CM_SETUP_WIZARD_COMPLETED),
->>>>>>> origin/mm6.0
                 false, mDeviceProvisionedObserver);
 
         // prevent a race condition between where we check the flag and where we register the
