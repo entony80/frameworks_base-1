@@ -109,24 +109,6 @@ public class RecentsTaskLoadPlan {
         for (int i = 0; i < taskCount; i++) {
             ActivityManager.RecentTaskInfo t = mRawTasks.get(i);
 
-            boolean onlyShowRunningTasks = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.RECENT_SHOW_RUNNING_TASKS, 0,
-                    UserHandle.USER_CURRENT) == 1;
-
-            final List<ActivityManager.RunningTaskInfo> runningTasks =
-                mSystemServicesProxy.getRunningTasks(Integer.MAX_VALUE);
-
-            boolean isRunning = false;
-            if (onlyShowRunningTasks) {
-                for (ActivityManager.RunningTaskInfo task : runningTasks) {
-                    if (t.baseIntent.getComponent().getPackageName().equals(
-                            task.baseActivity.getPackageName())) {
-                        isRunning = true;
-                    }
-                }
-                if (!isRunning) continue;
-            }
-
             // Compose the task key
             Task.TaskKey taskKey = new Task.TaskKey(t.persistentId, t.stackId, t.baseIntent,
                     t.userId, t.firstActiveTime, t.lastActiveTime);
