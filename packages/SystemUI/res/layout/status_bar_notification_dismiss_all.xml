@@ -22,8 +22,7 @@
         android:visibility="gone"
         android:clipChildren="false"
         android:clipToPadding="false">
-		
-    <Button
+    <com.android.systemui.statusbar.DismissViewButton
             android:id="@+id/dismiss_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
