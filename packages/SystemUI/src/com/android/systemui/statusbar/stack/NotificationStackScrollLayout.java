@@ -1784,6 +1784,12 @@ public class NotificationStackScrollLayout extends ViewGroup
         generateAddAnimation(child, false /* fromMoreCard */);
         updateAnimationState(child);
         updateChronometerForChild(child);
+        if (canChildBeDismissed(child)) {
+            // Make sure the dismissButton is visible and not in the animated state.
+            // We need to do this to avoid a race where a clearable notification is added after the
+            // dismiss animation is finished
+            mDismissView.showClearButton();
+        }
     }
 
     private void updateHideSensitiveForChild(View child) {
@@ -2636,6 +2642,7 @@ public class NotificationStackScrollLayout extends ViewGroup
                     mDismissView.performVisibilityAnimation(false, dimissHideFinishRunnable);
                 } else {
                     dimissHideFinishRunnable.run();
+                    mDismissView.showClearButton();
                 }
             }
         }
@@ -2643,6 +2650,7 @@ public class NotificationStackScrollLayout extends ViewGroup
 
     public void setDismissAllInProgress(boolean dismissAllInProgress) {
         mDismissAllInProgress = dismissAllInProgress;
+        mDismissView.setDismissAllInProgress(dismissAllInProgress);
         mAmbientState.setDismissAllInProgress(dismissAllInProgress);
         if (dismissAllInProgress) {
             disableClipOptimization();
@@ -2680,6 +2688,10 @@ public class NotificationStackScrollLayout extends ViewGroup
 
     public boolean isDismissViewNotGone() {
         return mDismissView.getVisibility() != View.GONE && !mDismissView.willBeGone();
+    }
+
+    public boolean isDismissViewVisible() {
+        return mDismissView.isVisible();
     }
 
     public int getDismissViewHeight() {
@@ -2754,7 +2766,12 @@ public class NotificationStackScrollLayout extends ViewGroup
                 }
                 boolean belowChild = touchY > childTop + child.getActualHeight();
                 if (child == mDismissView) {
-                    if (child == mEmptyShadeView) {
+                    if(!belowChild && !mDismissView.isOnEmptySpace(touchX - mDismissView.getX(),
+                                    touchY - childTop)) {
+                        // We clicked on the dismiss button
+                        return false;
+                    }
+                } else if (child == mEmptyShadeView) {
                     // We arrived at the empty shade view, for which we accept all clicks
                     return true;
                 } else if (!belowChild){
