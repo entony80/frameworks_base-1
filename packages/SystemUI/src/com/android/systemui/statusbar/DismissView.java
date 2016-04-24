@@ -100,12 +100,15 @@ public class DismissView extends ExpandableView {
     }
 
     @Override
-    public void performRemoveAnimation(float translationDirection, Runnable onFinishedRunnable) {
+    public void performRemoveAnimation(long duration, float translationDirection,
+            Runnable onFinishedRunnable) {
+        // TODO: Use duration
         performVisibilityAnimation(false);
     }
 
-    @Override
-    public void performAddAnimation(long delay) {
+     @Override
+    public void performAddAnimation(long delay, long duration) {
+        // TODO: use delay and duration
         performVisibilityAnimation(true);
     }
 

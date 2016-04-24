@@ -467,8 +467,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     VelocityTracker mVelocityTracker;
 
     int[] mAbsPos = new int[2];
+	Runnable mPostCollapseCleanup = null;
     ArrayList<Runnable> mPostCollapseRunnables = new ArrayList<>();
-
+	
     private boolean mAutomaticBrightness;
     private boolean mBrightnessControl;
     private boolean mBrightnessChanged;
