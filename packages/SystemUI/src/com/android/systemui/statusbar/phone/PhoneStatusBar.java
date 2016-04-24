@@ -1353,7 +1353,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         });
         mStackScroller.setDismissView(mDismissView);
-        mStackScroller.setDismissView(mDismissView);
         mExpandedContents = mStackScroller;
 
         mBackdrop = (BackDropView) mStatusBarWindowContent.findViewById(R.id.backdrop);
@@ -2286,7 +2285,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     // know about it. Ignore completely.
                     continue;
                 }
-                if (entry.row.getVisibility() != View.GONE && entry.expanded != null
+                if (entry.row.getVisibility() != View.GONE
                         && entry.notification.isClearable()) {
                     showDismissView = true;
                     break;
