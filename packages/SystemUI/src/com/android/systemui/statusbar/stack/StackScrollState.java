@@ -108,11 +108,12 @@ public class StackScrollState {
                 continue;
             }
             if(child instanceof SpeedBumpView) {
+				float lineEnd = newYTranslation + newHeight / 2;
                 performSpeedBumpAnimation(i, (SpeedBumpView) child, state, 0);
             } else if (child instanceof DismissView) {
                 DismissView dismissView = (DismissView) child;
                 boolean visible = state.topOverLap < mClearAllTopPadding;
-                dismissView.performVisibilityAnimation(visible && !dismissView.willBeGone());
+                dismissView.performVisibilityAnimation(visible);
             } else if (child instanceof EmptyShadeView) {
                 EmptyShadeView emptyShadeView = (EmptyShadeView) child;
                 boolean visible = state.topOverLap <= 0;

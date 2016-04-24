@@ -2282,9 +2282,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateClearAll() {
-        boolean showDismissView =
-                mState != StatusBarState.KEYGUARD &&
-                mNotificationData.hasActiveClearableNotifications();
+        boolean showDismissView = false;
+        if (mState != StatusBarState.KEYGUARD) {
+            for (int i = 0; i < mNotificationData.size(); i++) {
+                Entry entry = mNotificationData.get(i);
+                if (entry.row.getParent() == null) {
+                    // This view isn't even added, so the stack scroller doesn't
+                    // know about it. Ignore completely.
+                    continue;
+                }
+                if (entry.row.getVisibility() != View.GONE && entry.expanded != null
+                        && entry.notification.isClearable()) {
+                    showDismissView = true;
+                    break;
+                }
+            }
+        }
         mStackScroller.updateDismissView(showDismissView);
     }
 
@@ -3090,7 +3103,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             float speedUpFactor) {
         if (!force &&
                 (mState == StatusBarState.KEYGUARD || mState == StatusBarState.SHADE_LOCKED)) {
-            runPostCollapseRunnables();
+            if (mPostCollapseCleanup != null) {
+                mPostCollapseCleanup.run();
+                mPostCollapseCleanup = null;
+            }
             return;
         }
         if (SPEW) {
@@ -5185,7 +5201,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     public void onClosingFinished() {
-        runPostCollapseRunnables();
+        if (mPostCollapseCleanup != null) {
+            mPostCollapseCleanup.run();
+            mPostCollapseCleanup = null;
+        }
     }
 
     public void onUnlockHintStarted() {
