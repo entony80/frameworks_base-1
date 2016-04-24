@@ -209,6 +209,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     private boolean mInterceptDelegateEnabled;
     private boolean mDelegateToScrollView;
     private boolean mDisallowScrollingInThisMotion;
+	private boolean mDismissWillBeGone;
     private long mGoToFullShadeDelay;
 
     private ViewTreeObserver.OnPreDrawListener mChildrenUpdater
