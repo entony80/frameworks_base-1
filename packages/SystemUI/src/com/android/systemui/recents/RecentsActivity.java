@@ -261,20 +261,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 }
             });
             mRecentsView.setSearchBarVisibility(View.GONE);
-            findViewById(R.id.floating_action_button).setVisibility(View.GONE);
-
-            // Make the animation of empty recents animatable
-            Drawable drawable = getResources().getDrawable(R.drawable.no_recents, null);
-            ImageView imageView = (ImageView) mEmptyView.findViewById(R.id.no_recents_holder);
-            if (imageView != null){
-                imageView.setImageDrawable(drawable);
-            }
-
-            if (drawable instanceof Animatable){
-                ((Animatable)drawable).start();
-            }
-
-        } else {
+            findViewById(R.id.clear_recents).setVisibility(View.GONE);
             if (mEmptyView != null) {
                 mEmptyView.setVisibility(View.GONE);
                 mEmptyView.setOnClickListener(null);
@@ -282,7 +269,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             boolean showSearchBar = CMSettings.System.getInt(getContentResolver(),
                        CMSettings.System.RECENTS_SHOW_SEARCH_BAR, 1) == 1;
 
-            findViewById(R.id.floating_action_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.clear_recents).setVisibility(View.VISIBLE);
             if (mRecentsView.hasValidSearchBar()) {
                 if (showSearchBar) {
                     mRecentsView.setSearchBarVisibility(View.VISIBLE);
