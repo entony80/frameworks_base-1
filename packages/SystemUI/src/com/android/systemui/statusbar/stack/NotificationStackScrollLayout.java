@@ -209,7 +209,6 @@ public class NotificationStackScrollLayout extends ViewGroup
     private boolean mInterceptDelegateEnabled;
     private boolean mDelegateToScrollView;
     private boolean mDisallowScrollingInThisMotion;
-	private boolean mDismissWillBeGone;
     private long mGoToFullShadeDelay;
 
     private ViewTreeObserver.OnPreDrawListener mChildrenUpdater
@@ -297,10 +296,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mOverflingDistance = configuration.getScaledOverflingDistance();
-		float densityScale = getResources().getDisplayMetrics().density;
-        float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
-        mSwipeHelper.setLongPressListener(mLongClickListener);
 
         mSidePaddings = context.getResources()
                 .getDimensionPixelSize(R.dimen.notification_side_padding);
@@ -808,7 +803,6 @@ public class NotificationStackScrollLayout extends ViewGroup
     }
 
     public void dismissViewAnimated(View child, Runnable endRunnable, int delay, long duration) {
-        child.setClipBounds(null);
         mSwipeHelper.dismissChild(child, 0, endRunnable, delay, true, duration);
     }
 
@@ -2536,35 +2530,6 @@ public class NotificationStackScrollLayout extends ViewGroup
     public void setDismissView(DismissView dismissView) {
         mDismissView = dismissView;
         addView(mDismissView);
-    }
-
-    public void updateDismissView(boolean visible) {
-        int oldVisibility = mDismissWillBeGone ? GONE : mDismissView.getVisibility();
-        int newVisibility = visible ? VISIBLE : GONE;
-        if (oldVisibility != newVisibility) {
-            if (oldVisibility == GONE) {
-                if (mDismissWillBeGone) {
-                    mDismissView.cancelAnimation();
-                } else {
-                    mDismissView.setInvisible();
-                    mDismissView.setVisibility(newVisibility);
-                }
-                mDismissWillBeGone = false;
-            } else {
-                mDismissWillBeGone = true;
-                mDismissView.performVisibilityAnimation(false, new Runnable() {
-                    @Override
-                    public void run() {
-                        mDismissView.setVisibility(GONE);
-                        mDismissWillBeGone = false;
-                    }
-                });
-            }
-        }
-    }
-
-    public void setDismissAllInProgress(boolean dismissAllInProgress) {
-        mDismissAllInProgress = dismissAllInProgress;
     }
 
     public void setEmptyShadeView(EmptyShadeView emptyShadeView) {
