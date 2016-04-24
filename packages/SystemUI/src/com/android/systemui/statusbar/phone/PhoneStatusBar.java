@@ -1348,10 +1348,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mDismissView.setOnButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MetricsLogger.action(mContext, MetricsLogger.ACTION_DISMISS_ALL_NOTES);
                 clearAllNotifications();
             }
         });
-        mStackScroller.setDismissView(mDismissView);
         mStackScroller.setDismissView(mDismissView);
         mExpandedContents = mStackScroller;
 
@@ -1781,9 +1781,20 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         final ArrayList<View> viewsToHide = new ArrayList<View>(numChildren);
         for (int i = 0; i < numChildren; i++) {
             final View child = mStackScroller.getChildAt(i);
-            if (mStackScroller.canChildBeDismissed(child)) {
-                if (child.getVisibility() == View.VISIBLE) {
-                    viewsToHide.add(child);
+            if (child instanceof ExpandableNotificationRow) {
+                if (mStackScroller.canChildBeDismissed(child)) {
+                    if (child.getVisibility() == View.VISIBLE) {
+                        viewsToHide.add(child);
+                    }
+                }
+                ExpandableNotificationRow row = (ExpandableNotificationRow) child;
+                List<ExpandableNotificationRow> children = row.getNotificationChildren();
+                if (row.areChildrenExpanded() && children != null) {
+                    for (ExpandableNotificationRow childRow : children) {
+                        if (childRow.getVisibility() == View.VISIBLE) {
+                            viewsToHide.add(childRow);
+                        }
+                    }
                 }
             }
         }
@@ -1792,14 +1803,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             return;
         }
 
-        mPostCollapseCleanup = new Runnable() {
+        addPostCollapseAction(new Runnable() {
             @Override
             public void run() {
+                mStackScroller.setDismissAllInProgress(false);
                 try {
                     mBarService.onClearAllNotifications(mCurrentUserId);
                 } catch (Exception ex) { }
             }
-        };
+        });
 
         performDismissAllAnimations(viewsToHide);
 
@@ -1809,12 +1821,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         Runnable animationFinishAction = new Runnable() {
             @Override
             public void run() {
-                mStackScroller.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mStackScroller.setDismissAllInProgress(false);
-                    }
-                });
                 animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
             }
         };
@@ -1826,12 +1832,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // accelerating the swipes
         int rowDelayDecrement = 10;
         int currentDelay = 140;
-        int totalDelay = 0;
+        int totalDelay = 180;
         int numItems = hideAnimatedList.size();
-        for (int i = 0; i < numItems; i++) {
+        for (int i = numItems - 1; i >= 0; i--) {
             View view = hideAnimatedList.get(i);
             Runnable endRunnable = null;
-            if (i == numItems - 1) {
+            if (i == 0) {
                 endRunnable = animationFinishAction;
             }
             mStackScroller.dismissViewAnimated(view, endRunnable, totalDelay, 260);
@@ -2276,22 +2282,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateClearAll() {
-        boolean showDismissView = false;
-        if (mState != StatusBarState.KEYGUARD) {
-            for (int i = 0; i < mNotificationData.size(); i++) {
-                Entry entry = mNotificationData.get(i);
-                if (entry.row.getParent() == null) {
-                    // This view isn't even added, so the stack scroller doesn't
-                    // know about it. Ignore completely.
-                    continue;
-                }
-                if (entry.row.getVisibility() != View.GONE && entry.expanded != null
-                        && entry.notification.isClearable()) {
-                    showDismissView = true;
-                    break;
-                }
-            }
-        }
+        boolean showDismissView =
+                mState != StatusBarState.KEYGUARD &&
+                mNotificationData.hasActiveClearableNotifications();
         mStackScroller.updateDismissView(showDismissView);
     }
 
