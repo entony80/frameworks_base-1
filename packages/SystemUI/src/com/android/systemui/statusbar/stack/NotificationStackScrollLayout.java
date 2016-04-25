@@ -300,7 +300,7 @@ public class NotificationStackScrollLayout extends ViewGroup
 		float densityScale = getResources().getDisplayMetrics().density;
         float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
-        mSwipeHelper.setLongPressListener(mLongClickListener);
+        mSwipeHelper.setLongPressListener(mLongPressListener);
 
         mSidePaddings = context.getResources()
                 .getDimensionPixelSize(R.dimen.notification_side_padding);
@@ -1789,12 +1789,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         generateAddAnimation(child, false /* fromMoreCard */);
         updateAnimationState(child);
         updateChronometerForChild(child);
-        if (canChildBeDismissed(child)) {
-            // Make sure the dismissButton is visible and not in the animated state.
-            // We need to do this to avoid a race where a clearable notification is added after the
-            // dismiss animation is finished
-            mDismissView.showClearButton();
-        }
     }
 
     private void updateHideSensitiveForChild(View child) {
@@ -2645,41 +2639,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
-    public void updateDismissView(boolean visible) {
-        int oldVisibility = mDismissView.willBeGone() ? GONE : mDismissView.getVisibility();
-        int newVisibility = visible ? VISIBLE : GONE;
-        if (oldVisibility != newVisibility) {
-            if (newVisibility != GONE) {
-                if (mDismissView.willBeGone()) {
-                    mDismissView.cancelAnimation();
-                } else {
-                    mDismissView.setInvisible();
-                }
-                mDismissView.setVisibility(newVisibility);
-                mDismissView.setWillBeGone(false);
-                updateContentHeight();
-                notifyHeightChangeListener(mDismissView);
-            } else {
-                Runnable dimissHideFinishRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        mDismissView.setVisibility(GONE);
-                        mDismissView.setWillBeGone(false);
-                        updateContentHeight();
-                        notifyHeightChangeListener(mDismissView);
-                    }
-                };
-                if (mDismissView.isButtonVisible() && mIsExpanded && mAnimationsEnabled) {
-                    mDismissView.setWillBeGone(true);
-                    mDismissView.performVisibilityAnimation(false, dimissHideFinishRunnable);
-                } else {
-                    dimissHideFinishRunnable.run();
-                    mDismissView.showClearButton();
-                }
-            }
-        }
-    }
-
     public void setDismissAllInProgress(boolean dismissAllInProgress) {
         mDismissAllInProgress = dismissAllInProgress;
         mDismissView.setDismissAllInProgress(dismissAllInProgress);
@@ -2716,15 +2675,6 @@ public class NotificationStackScrollLayout extends ViewGroup
             }
             child.setClipTopOptimization(0);
         }
-    }
-
-        // Hack: Accommodate for additional distance when we only have one notification and the
-        // dismiss all button.
-        if (getNotGoneChildCount() == 2 && getLastChildNotGone() == mDismissView
-                && getFirstChildNotGone() instanceof ActivatableNotificationView) {
-            height += mCollapseSecondCardPadding;
-        }
-        return height;
     }
 
     public int getEmptyShadeViewHeight() {
