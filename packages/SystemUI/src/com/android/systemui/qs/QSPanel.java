@@ -455,7 +455,7 @@ public class QSPanel extends ViewGroup {
             MetricsLogger.visible(mContext, detailAdapter.getMetricsCategory());
             announceForAccessibility(mContext.getString(
                     R.string.accessibility_quick_settings_detail,
-                    mContext.getString(detailAdapter.getTitle())));
+                    QSTile.getDetailAdapterTitle(mContext, detailAdapter)));
             setDetailRecord(r);
             listener = mHideGridContentWhenDone;
             if (r instanceof TileRecord && visibleDiff) {
