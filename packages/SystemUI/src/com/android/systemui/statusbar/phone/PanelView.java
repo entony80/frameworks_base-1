@@ -645,6 +645,16 @@ public abstract class PanelView extends FrameLayout {
             boolean expandBecauseOfFalsing) {
         cancelPeek();
         float target = expand ? getMaxPanelHeight() : 0.0f;
+		
+		// Hack to make the expand transition look nice when clear all button is visible - we make
+        // the animation only to the last notification, and then jump to the maximum panel height so
+        // clear all just fades in and the decelerating motion is towards the last notification.
+        final boolean clearAllExpandHack = expand && fullyExpandedClearAllVisible()
+                && mExpandedHeight < getMaxPanelHeight() - getClearAllHeight()
+                && !isClearAllVisible();
+        if (clearAllExpandHack) {
+            target = getMaxPanelHeight() - getClearAllHeight();
+        }
         if (!expand) {
             mClosing = true;
         }
@@ -708,9 +718,32 @@ public abstract class PanelView extends FrameLayout {
                 if (clearAllExpandHack && !mCancelled) {
                     setExpandedHeightInternal(getMaxPanelHeight());
                 }
-                mHeightAnimator = null;
-                if (!mCancelled) {
-                    notifyExpandingFinished();
+                if (clearAllExpandHack && !mCancelled) {
+                    mHeightAnimator = createHeightAnimator(getMaxPanelHeight());
+                    mHeightAnimator.setInterpolator(mLinearOutSlowInInterpolator);
+                    mHeightAnimator.setDuration(350);
+                    mHeightAnimator.addListener(new AnimatorListenerAdapter() {
+                        private boolean mCancelled;
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            mCancelled = true;
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mHeightAnimator = null;
+                            if (!mCancelled) {
+                                notifyExpandingFinished();
+                            }
+                        }
+                    });
+                    mHeightAnimator.start();
+                } else {
+                    mHeightAnimator = null;
+                    if (!mCancelled) {
+                        notifyExpandingFinished();
+                    }
                 }
                 notifyBarPanelExpansionChanged();
             }

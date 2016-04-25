@@ -113,7 +113,7 @@ public class StackScrollState {
             } else if (child instanceof DismissView) {
                 DismissView dismissView = (DismissView) child;
                 boolean visible = state.topOverLap < mClearAllTopPadding;
-                dismissView.performVisibilityAnimation(visible);
+                dismissView.performVisibilityAnimation(visible && !dismissView.willBeGone());
             } else if (child instanceof EmptyShadeView) {
                 EmptyShadeView emptyShadeView = (EmptyShadeView) child;
                 boolean visible = state.topOverLap <= 0;
