@@ -467,6 +467,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     VelocityTracker mVelocityTracker;
 
     int[] mAbsPos = new int[2];
+	Runnable mPostCollapseCleanup = null;
     ArrayList<Runnable> mPostCollapseRunnables = new ArrayList<>();
 
     private boolean mAutomaticBrightness;
@@ -2291,7 +2292,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     // know about it. Ignore completely.
                     continue;
                 }
-                if (entry.row.getVisibility() != View.GONE && entry.expanded != null
+                if (entry.row.getVisibility() != View.GONE
                         && entry.notification.isClearable()) {
                     showDismissView = true;
                     break;

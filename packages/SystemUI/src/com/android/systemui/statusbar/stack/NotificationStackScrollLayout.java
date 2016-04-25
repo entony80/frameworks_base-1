@@ -198,6 +198,7 @@ public class NotificationStackScrollLayout extends ViewGroup
      * motion.
      */
     private int mMaxScrollAfterExpand;
+	private OnLongClickListener mLongClickListener;
     private SwipeHelper.LongPressListener mLongPressListener;
 
     /**
@@ -2564,10 +2565,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
-    public void setDismissAllInProgress(boolean dismissAllInProgress) {
-        mDismissAllInProgress = dismissAllInProgress;
-    }
-
     public void setEmptyShadeView(EmptyShadeView emptyShadeView) {
         mEmptyShadeView = emptyShadeView;
         addView(mEmptyShadeView);
@@ -2721,17 +2718,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
-    public boolean isDismissViewNotGone() {
-        return mDismissView.getVisibility() != View.GONE && !mDismissView.willBeGone();
-    }
-
-    public boolean isDismissViewVisible() {
-        return mDismissView.isVisible();
-    }
-
-    public int getDismissViewHeight() {
-        int height = mDismissView.getHeight() + mPaddingBetweenElementsNormal;
-
         // Hack: Accommodate for additional distance when we only have one notification and the
         // dismiss all button.
         if (getNotGoneChildCount() == 2 && getLastChildNotGone() == mDismissView
@@ -2801,7 +2787,7 @@ public class NotificationStackScrollLayout extends ViewGroup
                 }
                 boolean belowChild = touchY > childTop + child.getActualHeight();
                 if (child == mDismissView) {
-                    if(!belowChild && !mDismissView.isOnEmptySpace(touchX - mDismissView.getX(),
+                    if(!belowChild(touchX - mDismissView.getX(),
                                     touchY - childTop)) {
                         // We clicked on the dismiss button
                         return false;
