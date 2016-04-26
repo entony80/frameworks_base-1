@@ -2639,16 +2639,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
-    public void setDismissAllInProgress(boolean dismissAllInProgress) {
-        mDismissAllInProgress = dismissAllInProgress;
-        mDismissView.setDismissAllInProgress(dismissAllInProgress);
-        mAmbientState.setDismissAllInProgress(dismissAllInProgress);
-        if (dismissAllInProgress) {
-            disableClipOptimization();
-        }
-        handleDismissAllClipping();
-    }
-
     private void handleDismissAllClipping() {
         final int count = getChildCount();
         boolean previousChildWillBeDismissed = false;
