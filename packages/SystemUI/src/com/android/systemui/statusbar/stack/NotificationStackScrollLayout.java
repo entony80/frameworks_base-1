@@ -2559,6 +2559,10 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
+	 public void setDismissAllInProgress(boolean dismissAllInProgress) {
+        mDismissAllInProgress = dismissAllInProgress;
+    }
+ 
     public void setEmptyShadeView(EmptyShadeView emptyShadeView) {
         mEmptyShadeView = emptyShadeView;
         addView(mEmptyShadeView);

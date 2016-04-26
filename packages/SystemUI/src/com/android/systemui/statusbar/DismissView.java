@@ -126,11 +126,6 @@ public class DismissView extends ExpandableView {
         performVisibilityAnimation(true);
     }
 
-    @Override
-    public void setScrimAmount(float scrimAmount) {
-        // We don't need to scrim the dismissView
-    }
-
     public void setOnButtonClickListener(OnClickListener onClickListener) {
         mClearAllText.setOnClickListener(onClickListener);
     }
