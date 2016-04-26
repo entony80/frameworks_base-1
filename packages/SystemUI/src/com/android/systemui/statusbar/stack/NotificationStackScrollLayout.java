@@ -209,6 +209,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     private boolean mInterceptDelegateEnabled;
     private boolean mDelegateToScrollView;
     private boolean mDisallowScrollingInThisMotion;
+	private boolean mDismissWillBeGone;
     private long mGoToFullShadeDelay;
 
     private ViewTreeObserver.OnPreDrawListener mChildrenUpdater
@@ -2538,26 +2539,24 @@ public class NotificationStackScrollLayout extends ViewGroup
     }
 
     public void updateDismissView(boolean visible) {
-        int oldVisibility = mDismissView.willBeGone() ? GONE : mDismissView.getVisibility();
+        int oldVisibility = mDismissWillBeGone ? GONE : mDismissView.getVisibility();
         int newVisibility = visible ? VISIBLE : GONE;
         if (oldVisibility != newVisibility) {
             if (oldVisibility == GONE) {
-                if (mDismissView.willBeGone()) {
+                if (mDismissWillBeGone) {
                     mDismissView.cancelAnimation();
                 } else {
                     mDismissView.setInvisible();
                     mDismissView.setVisibility(newVisibility);
                 }
-                mDismissView.setWillBeGone(false);
-                updateContentHeight();
+                mDismissWillBeGone = false;
             } else {
-                mDismissView.setWillBeGone(true);
+                mDismissWillBeGone = true;
                 mDismissView.performVisibilityAnimation(false, new Runnable() {
                     @Override
                     public void run() {
                         mDismissView.setVisibility(GONE);
-                        mDismissView.setWillBeGone(false);
-                        updateContentHeight();
+                        mDismissWillBeGone = false;
                     }
                 });
             }
@@ -2914,18 +2913,6 @@ public class NotificationStackScrollLayout extends ViewGroup
     @Override
     public boolean hasOverlappingRendering() {
         return !mForceNoOverlappingRendering && super.hasOverlappingRendering();
-    }
-
-	public boolean isDismissViewNotGone() {
-        return mDismissView.getVisibility() != View.GONE && !mDismissView.willBeGone();
-    }
-
-    public boolean isDismissViewVisible() {
-        return mDismissView.isVisible();
-    }
-
-    public int getDismissViewHeight() {
-        return mDismissView.getHeight() + mPaddingBetweenElementsNormal;
     }
 
     /**
